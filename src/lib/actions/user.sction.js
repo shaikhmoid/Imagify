@@ -5,19 +5,37 @@ import { revalidatePath } from "next/cache";
 import User from "../DB/model/user.model";
 import { connectToDatabase } from "../DB/mongo.db";
 import { handleError } from "../utils";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 // CREATE
-export async function createUser(user) {
+export async function createUser() {
   try {
-    console.log(user);
-
     await connectToDatabase();
 
-    const newUser = await User.create(user);
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    return JSON.parse(JSON.stringify(newUser));
+    if (!userId || !user) return;
+
+    const existingUser = await User.findOne({ clerkId: userId });
+    console.log(existingUser);
+
+    if (existingUser) return existingUser;
+
+    const dbUser = new User({
+      clerkId: userId,
+      firstName: `${user.firstName || ""} ${user.lastName || ""}`,
+      username:
+        user.username ?? user.emailAddresses[0].emailAddress.split("@")[0],
+      email: user.emailAddresses[0].emailAddress,
+      photo: user.imageUrl,
+    });
+
+    dbUser.save();
+
+    return dbUser;
   } catch (error) {
-    handleError(error);
+    console.log("Error in syncUser", error);
   }
 }
 

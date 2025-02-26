@@ -1,9 +1,13 @@
 import React from "react";
 import SideBar from "../../components/shared/SideBar";
-import { SignIn, SignInButton, UserButton } from "@clerk/nextjs";
 import MobileNav from "@/components/shared/MobileNav";
+import { currentUser } from "@clerk/nextjs/server";
+import { createUser } from "@/lib/actions/user.sction";
 
-const Layout = ({ children }) => {
+const Layout = async ({ children }) => {
+  const user = await currentUser();
+  if (user) await createUser();
+
   return (
     <div className="root">
       <SideBar />

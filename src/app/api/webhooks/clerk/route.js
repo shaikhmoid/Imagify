@@ -9,7 +9,6 @@ import {
   deleteUser,
   updateUser,
 } from "../../../../lib/actions/user.sction";
-console.log("11");
 
 export async function POST(req) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -20,8 +19,6 @@ export async function POST(req) {
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
-
-  console.log("12");
 
   // Get the headers
   const headerPayload = headers();
@@ -35,8 +32,6 @@ export async function POST(req) {
       status: 400,
     });
   }
-
-  console.log("13");
 
   // Get the body
   const payload = await req.json();
