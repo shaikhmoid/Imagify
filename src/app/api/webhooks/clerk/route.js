@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
@@ -9,6 +9,7 @@ import {
   deleteUser,
   updateUser,
 } from "../../../../lib/actions/user.sction";
+console.log("11");
 
 export async function POST(req) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -19,6 +20,8 @@ export async function POST(req) {
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
+
+  console.log("12");
 
   // Get the headers
   const headerPayload = headers();
@@ -32,6 +35,8 @@ export async function POST(req) {
       status: 400,
     });
   }
+
+  console.log("13");
 
   // Get the body
   const payload = await req.json();
@@ -59,6 +64,7 @@ export async function POST(req) {
   // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
+  console.log(evt.data);
 
   // CREATE
   if (eventType === "user.created") {

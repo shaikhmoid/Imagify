@@ -3,6 +3,7 @@ import mongoose, { Mongoose } from "mongoose";
 const MONGODB_URL = process.env.MONGODB_URL;
 
 let cached = global.mongoose;
+console.log("er1");
 
 if (!cached) {
   cached = global.mongoose = {
@@ -10,8 +11,11 @@ if (!cached) {
     promise: null,
   };
 }
+console.log("er12");
 
 export const connectToDatabase = async () => {
+  console.log("databese connected");
+
   if (cached.conn) return cached.conn;
 
   if (!MONGODB_URL) throw new Error("Missing MONGODB_URL");
@@ -23,8 +27,6 @@ export const connectToDatabase = async () => {
     });
 
   cached.conn = await cached.promise;
-
-  console.log("databese connected");
 
   return cached.conn;
 };
